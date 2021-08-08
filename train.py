@@ -13,8 +13,9 @@ from torch.nn import functional as F
 import torchmetrics as tm
 import hydra
 from hydra.utils import get_original_cwd
-from omegaconf import DictConfig
-
+from omegaconf import DictConfig, OmegaConf
+import logging
+logger = logging.getLogger(__name__)
 
 
 class ESC20Dataset(torch.utils.data.Dataset):
@@ -92,6 +93,7 @@ class AudioNet(pl.LightningModule):
 
 @hydra.main(config_path="configs", config_name="default")
 def train(cfg: DictConfig):
+    logger.info(OmegaConf.to_yaml(cfg))
     path = Path(get_original_cwd()) / Path(cfg.data.path)
     train_data = ESC20Dataset(path = path,folds = cfg.data.train_folds)
     val_data = ESC20Dataset(path = path,folds = cfg.data.val_folds)
